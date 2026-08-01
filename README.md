@@ -98,6 +98,17 @@ Every subscription and event API requires **`X-Customer-Id`**. Missing → `401`
 | `DELETE` | `/api/v1/subscriptions/{id}` | Delete (tenant-scoped) |
 | `GET` | `/api/v1/deliveries?eventId=` | Audit by event |
 | `GET` | `/api/v1/deliveries?subscriptionId=` | Audit by subscription |
+| `POST` | `/api/v1/replay` | Re-queue fanout for a durable event |
+
+### Replay
+
+Re-reads the event from its sealed JSONL batch, matches **current** subscriptions (same tenant + filter), resets those deliveries to `PENDING`, and sets the batch back to `READY` so the worker delivers again (at-least-once).
+
+```json
+{ "eventId": "<id>", "subscriptionId": "<optional>" }
+```
+
+Omit `subscriptionId` to replay to all matching subscriptions for that customer.
 
 ### Filter
 
@@ -146,6 +157,12 @@ curl -s -X POST localhost:8080/api/v1/events \
 
 # audit
 curl -s 'localhost:8080/api/v1/deliveries?eventId=<id>'
+
+# replay (re-fanout a durable event)
+curl -s -X POST localhost:8080/api/v1/replay \
+  -H 'X-Customer-Id: acme' \
+  -H 'Content-Type: application/json' \
+  -d '{"eventId":"<id>"}'
 ```
 
 ## CI
@@ -215,9 +232,10 @@ com.eventfanout
 ├── api/      Controllers, CustomerAuth, exception handler
 ├── ingest/   EventBuffer (flush + shutdown dump)
 ├── worker/   BatchWorker (claim, filter, HTTP delivery)
+├── replay/   ReplayService (re-queue deliveries + reopen batch)
 ├── store/    DbInit, SubscriptionStore, BatchRecovery
 ├── match/    FilterMatcher
-└── config/   RestClient
+└── config/   RestClient, StorageConfig
 ```
 
 ## Tests
@@ -245,7 +263,7 @@ Load test checks:
 | Single-node demo | Multi-host + shared object store |
 | Imperative / mutable style | More **functional** pipelines + **immutability** (see below) |
 
-Not implemented: ordering guarantees, replay API, cloud deploy (e.g. DO Kafka / Spaces).
+Not implemented: ordering guarantees, cloud deploy (e.g. DO Kafka / Spaces).
 
 ### Code readability (functional + immutable)
 
