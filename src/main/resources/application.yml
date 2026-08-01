@@ -1,0 +1,8 @@
+server.port: 8080
+
+spring:
+  datasource:
+    url: jdbc:sqlite:./data/fanout.db
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1

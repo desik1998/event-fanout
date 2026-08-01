@@ -1,0 +1,23 @@
+# Build
+target/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local Maven (vendored + cache)
+.m2/
+apache-maven-*/
+
+# Runtime data
+data/
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.swp
+*~
+
+# Logs
+*.log
