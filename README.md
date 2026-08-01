@@ -212,5 +212,15 @@ Load test checks:
 | At-least-once + 5s reclaim | Heartbeat leases, stronger fencing |
 | Poll READY batches | Notify worker on flush |
 | Single-node demo | Multi-host + shared object store |
+| Imperative / mutable style | More **functional** pipelines + **immutability** (see below) |
 
 Not implemented: ordering guarantees, replay API, cloud deploy (e.g. DO Kafka / Spaces).
+
+### Code readability (functional + immutable)
+
+The current code favors straightforward imperative Spring/Java for interview speed. We can improve readability and reasoning about concurrency by:
+
+- **Functional programming** — express fanout/filter/retry as small composed steps (e.g. stream/map/filter over events × subscriptions) instead of nested loops and mutable accumulators.
+- **Immutability** — prefer records / unmodifiable maps for events, deliveries, and filter results so worker threads share snapshots safely and side effects stay at the edges (DB, HTTP, disk).
+
+That keeps the same architecture while making the “what happens to each event” path easier to follow.
