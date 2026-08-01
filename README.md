@@ -148,6 +148,14 @@ curl -s -X POST localhost:8080/api/v1/events \
 curl -s 'localhost:8080/api/v1/deliveries?eventId=<id>'
 ```
 
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push/PR to `main`:
+
+- Java 21 (Temurin) + Maven
+- `mvn -B test` — unit, integration, and `MultiTenantLoadIT`
+- Surefire reports uploaded if the job fails
+
 ## Run locally
 
 Requires **Java 21** and **Maven 3.9+**.
