@@ -25,5 +25,6 @@ services:
       - key: WORKER_ID
         value: do-app-1
       - key: JAVA_TOOL_OPTIONS
-        value: "-XX:MaxRAMPercentage=75.0"    routes:
+        value: -XX:MaxRAMPercentage=75.0
+    routes:
       - path: /
