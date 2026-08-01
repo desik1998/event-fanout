@@ -22,13 +22,13 @@ public class BatchRecovery {
     private final Path batchesDir;
 
     @Autowired
-    public BatchRecovery(JdbcTemplate jdbc) {
-        this(jdbc, Path.of("data/batches"));
-    }
-
     public BatchRecovery(JdbcTemplate jdbc, Path batchesDir) {
         this.jdbc = jdbc;
         this.batchesDir = batchesDir;
+    }
+
+    public BatchRecovery(JdbcTemplate jdbc) {
+        this(jdbc, Path.of("data/batches"));
     }
 
     @PostConstruct

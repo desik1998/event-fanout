@@ -1,8 +1,11 @@
 server.port: 8080
 
+fanout:
+  batches-dir: ${FANOUT_BATCHES_DIR:data/batches}
+
 spring:
   datasource:
-    url: jdbc:sqlite:./data/fanout.db
+    url: ${SPRING_DATASOURCE_URL:jdbc:sqlite:./data/fanout.db}
     driver-class-name: org.sqlite.JDBC
     hikari:
       maximum-pool-size: 1

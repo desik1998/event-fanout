@@ -1,0 +1,29 @@
+name: event-fanout
+region: nyc
+services:
+  - name: api
+    github:
+      repo: desik1998/event-fanout
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 40
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 6
+    envs:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:sqlite:/tmp/fanout.db
+      - key: FANOUT_BATCHES_DIR
+        value: /tmp/batches
+      - key: WORKER_ID
+        value: do-app-1
+      - key: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=75.0"    routes:
+      - path: /

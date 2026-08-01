@@ -15,13 +15,13 @@ public class DbInit {
     private final Path batchesDir;
 
     @Autowired
-    public DbInit(JdbcTemplate jdbc) {
-        this(jdbc, Path.of("data/batches"));
-    }
-
     public DbInit(JdbcTemplate jdbc, Path batchesDir) {
         this.jdbc = jdbc;
         this.batchesDir = batchesDir;
+    }
+
+    public DbInit(JdbcTemplate jdbc) {
+        this(jdbc, Path.of("data/batches"));
     }
 
     @PostConstruct

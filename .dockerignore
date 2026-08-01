@@ -1,0 +1,8 @@
+target/
+.m2/
+apache-maven-*/
+data/
+.git/
+.idea/
+*.iml
+.DS_Store

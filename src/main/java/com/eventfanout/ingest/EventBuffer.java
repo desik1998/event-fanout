@@ -39,14 +39,14 @@ public class EventBuffer {
     private long bufferStartedAtMs;
 
     @Autowired
-    public EventBuffer(ObjectMapper mapper, JdbcTemplate jdbc) {
-        this(mapper, jdbc, Path.of("data/batches"));
-    }
-
     public EventBuffer(ObjectMapper mapper, JdbcTemplate jdbc, Path batchesDir) {
         this.mapper = mapper;
         this.jdbc = jdbc;
         this.batchesDir = batchesDir;
+    }
+
+    public EventBuffer(ObjectMapper mapper, JdbcTemplate jdbc) {
+        this(mapper, jdbc, Path.of("data/batches"));
     }
 
     /**

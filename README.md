@@ -156,6 +156,37 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push/PR to `main`:
 - `mvn -B test` — unit, integration, and `MultiTenantLoadIT`
 - Surefire reports uploaded if the job fails
 
+## Deploy (DigitalOcean App Platform)
+
+This deploys the **demo as-is** (SQLite + local disk under `/tmp` on a single App Platform instance). That is enough to exercise the API in the cloud. Full production mapping (Spaces ≈ S3, Managed DB ≈ Dynamo, multi-host workers) is the natural next step — see Tradeoffs.
+
+### One-time
+
+1. Push this repo to GitHub (already: `desik1998/event-fanout`).
+2. In DigitalOcean → **Apps** → connect the GitHub account if prompted.
+3. From this directory:
+
+```bash
+doctl auth init   # paste a Write-scoped API token
+doctl apps create --spec .do/app.yaml
+```
+
+Or: App Platform UI → Create App → GitHub → this repo → Dockerfile detected.
+
+### After deploy
+
+```bash
+doctl apps list
+curl https://<your-app-url>/health
+curl -s -X POST https://<your-app-url>/api/v1/subscriptions \
+  -H 'X-Customer-Id: acme' -H 'Content-Type: application/json' \
+  -d '{"url":"https://example.com/hook","filter":{"types":["order.*"]}}'
+```
+
+`Dockerfile` builds a JRE image; env vars set `SPRING_DATASOURCE_URL`, `FANOUT_BATCHES_DIR`, and `WORKER_ID`.
+
+**Security:** never commit API tokens. If a token was pasted into chat, **revoke/rotate** it in the DO control panel.
+
 ## Run locally
 
 Requires **Java 21** and **Maven 3.9+**.
